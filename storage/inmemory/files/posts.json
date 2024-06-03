@@ -1,0 +1,48 @@
+[
+  {
+    "id": "1",
+    "title": "Post",
+    "content": "A lot of text",
+    "commentsEnabled": true,
+    "comments": [
+      {
+        "id": "1",
+        "postId": "1",
+        "parentId": null,
+        "content": "Some comments about post",
+        "createdAt": "1900",
+        "userId": "2",
+        "replies": []
+      }
+    ],
+    "userId": "1"
+  },
+  {
+    "id": "2",
+    "title": "second Post ",
+    "content": "A lot of text two",
+    "commentsEnabled": true,
+    "comments": [
+      {
+        "id": "1",
+        "postId": "2",
+        "parentId": null,
+        "content": "Some comments about post",
+        "createdAt": "1900",
+        "userId": "1",
+        "replies": [
+          {
+            "id": "3",
+            "postId": "2",
+            "parentId": "1",
+            "content": "Child comments",
+            "createdAt": "1900",
+            "userId": "2",
+            "replies": []
+          }
+        ]
+      }
+    ],
+    "userId": "2"
+  }
+]
