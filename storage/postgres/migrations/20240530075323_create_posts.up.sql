@@ -1,8 +1,0 @@
-CREATE TABLE posts(
-    id BIGSERIAL PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    content TEXT NOT NULL,
-    comments_enabled BOOLEAN NOT NULL DEFAULT TRUE,
-
-    user_id BIGINT REFERENCES users (id) ON DELETE CASCADE NOT NULL
-);
