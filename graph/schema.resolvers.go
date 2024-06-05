@@ -7,7 +7,6 @@ package graph
 import (
 	"context"
 	"errors"
-
 	"github.com/farid21ola/forum/model"
 )
 
@@ -48,7 +47,18 @@ func (r *mutationResolver) UpdatePost(ctx context.Context, input *model.UpdatePo
 
 // AddComment is the resolver for the addComment field.
 func (r *mutationResolver) AddComment(ctx context.Context, input model.NewComment) (*model.Comment, error) {
-	return r.Domain.AddComment(ctx, input)
+	comment, err := r.Domain.AddComment(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	r.mu.Lock()
+	if chans, ok := r.CommentsObservers[input.PostID]; ok {
+		for _, ch := range chans {
+			ch <- comment
+		}
+	}
+	r.mu.Unlock()
+	return comment, nil
 }
 
 // Comments is the resolver for the comments field.
@@ -83,7 +93,24 @@ func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error
 
 // CommentAdded is the resolver for the commentAdded field.
 func (r *subscriptionResolver) CommentAdded(ctx context.Context, postID string) (<-chan *model.Comment, error) {
-	return nil, nil
+	//_, err := middleware.GetCurrentUserFromCtx(ctx)
+	//if err != nil {
+	//	return nil, domain.ErrUnauthenticated
+	//}
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	ch := make(chan *model.Comment, 1)
+	r.CommentsObservers[postID] = append(r.CommentsObservers[postID], ch)
+
+	go func() {
+		<-ctx.Done()
+		r.mu.Lock()
+		delete(r.CommentsObservers, postID)
+		r.mu.Unlock()
+	}()
+
+	return ch, nil
 }
 
 // Posts is the resolver for the posts field.

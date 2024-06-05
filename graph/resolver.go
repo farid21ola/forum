@@ -16,6 +16,6 @@ type Resolver struct {
 	Domain      *domain.Domain
 	NewComments []*model.Comment
 	// All active subscriptions
-	CommentsObservers map[string]chan []*model.Comment
+	CommentsObservers map[string][]chan *model.Comment
 	mu                sync.Mutex
 }

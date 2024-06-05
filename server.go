@@ -63,7 +63,7 @@ func main() {
 		Resolvers: &graph.Resolver{
 			Domain:            d,
 			NewComments:       []*model.Comment{},
-			CommentsObservers: map[string]chan []*model.Comment{},
+			CommentsObservers: map[string][]chan *model.Comment{},
 		}}))
 
 	srv.AddTransport(&transport.Websocket{
