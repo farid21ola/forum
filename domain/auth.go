@@ -48,7 +48,7 @@ func (d *Domain) Register(ctx context.Context, input *model.RegisterInput) (*mod
 		return nil, errors.New("something went wrong")
 	}
 
-	tx, err := d.Storage.GetDB().Begin(ctx)
+	tx, err := d.Storage.Begin(ctx)
 	if err != nil {
 		log.Printf("error creating a transaction: %v", err)
 		return nil, errors.New("something went wrong")

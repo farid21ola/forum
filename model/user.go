@@ -7,6 +7,11 @@ import (
 	"time"
 )
 
+type UserInterface interface {
+	GenToken() (*AuthToken, error)
+	ComparePassword(password string) error
+}
+
 type User struct {
 	ID        string    `json:"id"`
 	Username  string    `json:"username"`

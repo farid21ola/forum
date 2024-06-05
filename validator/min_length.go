@@ -2,7 +2,7 @@ package validator
 
 import "fmt"
 
-func (v *Validator) MinLenght(field, value string, high int) bool {
+func (v *Validator) MinLength(field, value string, high int) bool {
 	if _, ok := v.Errors[field]; ok {
 		return false
 	}

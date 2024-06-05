@@ -14,7 +14,7 @@ exec:
 
 # Where should any generated models go?
 model:
-  filename: graph/model/models_gen.go
+  filename: model/models_gen.go
   package: model
 
 # Where should the resolver implementations go?
@@ -75,19 +75,19 @@ autobind:
 # your liking
 models:
   User:
-    model: github.com/farid21ola/forum/graph/model.User
+    model: github.com/farid21ola/forum/model.User
     fields:
       posts:
         resolver: true
   Post:
-    model: github.com/farid21ola/forum/graph/model.Post
+    model: github.com/farid21ola/forum/model.Post
     fields:
       user:
         resolver: true
       comments:
         resolver: true
   Comment:
-    model: github.com/farid21ola/forum/graph/model.Comment
+    model: github.com/farid21ola/forum/model.Comment
     fields:
       user:
         resolver: true

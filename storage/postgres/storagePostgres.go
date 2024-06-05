@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/farid21ola/forum/model"
 	"github.com/jackc/pgx/v5"
@@ -30,8 +31,8 @@ func New(db *pgxpool.Pool) *Storage {
 	return &Storage{DB: db}
 }
 
-func (s *Storage) GetDB() *pgxpool.Pool {
-	return s.DB
+func (s *Storage) Begin(ctx context.Context) (pgx.Tx, error) {
+	return s.DB.Begin(ctx)
 }
 
 func (s *Storage) Posts(ctx context.Context, limit, offset *int) ([]*model.Post, error) {
@@ -76,7 +77,7 @@ func (s *Storage) Post(ctx context.Context, id string) (*model.Post, error) {
 		&post.ID, &post.Title, &post.Content, &post.CommentsEnabled, &post.UserID,
 	)
 	if err != nil {
-		if err == pgx.ErrNoRows {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, nil
 		}
 		return nil, err

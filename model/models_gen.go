@@ -28,7 +28,6 @@ type NewComment struct {
 	PostID   string  `json:"postId"`
 	ParentID *string `json:"parentId,omitempty"`
 	Content  string  `json:"content"`
-	UserID   string  `json:"userId"`
 }
 
 type NewPost struct {
@@ -53,5 +52,4 @@ type Subscription struct {
 type UpdatePost struct {
 	PostID         string `json:"postId"`
 	EnableComments bool   `json:"enableComments"`
-	UserID         string `json:"userId"`
 }

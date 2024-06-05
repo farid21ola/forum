@@ -4,13 +4,11 @@ import (
 	"context"
 	"github.com/farid21ola/forum/model"
 	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-//go:generate go run github.com/vektra/mockery/v2@2.20.0 --name=Storage
+//go:generate go run github.com/vektra/mockery/v2@v2.28.2 --name=Storage --output=./mocks
 type Storage interface {
-	GetDB() *pgxpool.Pool
-
+	Begin(ctx context.Context) (pgx.Tx, error)
 	UserByID(ctx context.Context, id string) (*model.User, error)
 	UserByUsername(ctx context.Context, username string) (*model.User, error)
 	Users(ctx context.Context) ([]*model.User, error)

@@ -46,5 +46,12 @@ func (d *Domain) UpdatePost(ctx context.Context, input *model.UpdatePost) (*mode
 		PostID:         input.PostID,
 		EnableComments: input.EnableComments,
 	}
+	if post.CommentsEnabled == input.EnableComments {
+		if input.EnableComments == true {
+			return nil, errors.New("comments already enabled")
+		} else {
+			return nil, errors.New("comments already disabled")
+		}
+	}
 	return d.Storage.UpdatePost(ctx, upd)
 }
