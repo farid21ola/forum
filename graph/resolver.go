@@ -13,8 +13,7 @@ import (
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	Domain      *domain.Domain
-	NewComments []*model.Comment
+	Domain *domain.Domain
 	// All active subscriptions
 	CommentsObservers map[string][]chan *model.Comment
 	mu                sync.Mutex
