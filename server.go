@@ -62,7 +62,6 @@ func main() {
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{
 		Resolvers: &graph.Resolver{
 			Domain:            d,
-			NewComments:       []*model.Comment{},
 			CommentsObservers: map[string][]chan *model.Comment{},
 		}}))
 
