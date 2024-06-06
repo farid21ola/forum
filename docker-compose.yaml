@@ -1,9 +1,15 @@
 version: '3'
 
 services:
+  app_im:
+    build: ./
+    command: ./forum -storage=false
+    ports:
+      - "8080:8080"
+
   app_db:
     build: ./
-    command: ./forum
+    command: ./forum -storage=true
     ports:
       - "8080:8080"
     depends_on:

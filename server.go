@@ -1,12 +1,15 @@
 package main
 
 import (
+	"flag"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/farid21ola/forum/storage/inmemory"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/websocket"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/rs/cors"
 
 	"github.com/farid21ola/forum/domain"
@@ -34,12 +37,22 @@ func main() {
 	}
 
 	var storage storage.Storage
+	var pool *pgxpool.Pool
 
-	pool, err := postgres.NewPoolPostgres(pgUrl)
-	if err != nil {
-		log.Fatalln("error init DB: ", err)
+	useDB := chooseStorage()
+
+	//выбор БД через флаг
+	//если true, значит postgres
+	//по умолчанию false, значит inMemory
+	if useDB {
+		pool, err := postgres.NewPoolPostgres(pgUrl)
+		if err != nil {
+			log.Fatalln("error init DB: ", err)
+		}
+		storage = postgres.New(pool)
+	} else {
+		storage = inmemory.New("storage/inmemory/files")
 	}
-	storage = postgres.New(pool)
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -75,8 +88,20 @@ func main() {
 	})
 
 	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	router.Handle("/query", graph.DataloaderMiddleware(pool, srv))
+
+	if useDB {
+		router.Handle("/query", graph.DataloaderMiddleware(pool, srv))
+	} else {
+		router.Handle("/query", srv)
+	}
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, router))
+}
+
+func chooseStorage() bool {
+	var dbFlag bool
+	flag.BoolVar(&dbFlag, "storage", false, "run with storage Postgres(true/false)=")
+	flag.Parse()
+	return dbFlag
 }

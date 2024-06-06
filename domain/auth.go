@@ -53,16 +53,20 @@ func (d *Domain) Register(ctx context.Context, input *model.RegisterInput) (*mod
 		log.Printf("error creating a transaction: %v", err)
 		return nil, errors.New("something went wrong")
 	}
-	defer tx.Rollback(ctx)
+	if tx != nil {
+		defer tx.Rollback(ctx)
+	}
 
 	if _, err = d.Storage.CreateUser(ctx, tx, user); err != nil {
 		log.Printf("error creating a user: %v", err)
 		return nil, err
 	}
 
-	if err = tx.Commit(ctx); err != nil {
-		log.Printf("error while commiting tx: %v", err)
-		return nil, err
+	if tx != nil {
+		if err = tx.Commit(ctx); err != nil {
+			log.Printf("error while commiting tx: %v", err)
+			return nil, err
+		}
 	}
 
 	token, err := user.GenToken()
