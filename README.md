@@ -39,3 +39,4 @@
 ### Работа с сервисом
 
 [Graphql Schema](https://github.com/farid21ola/forum/blob/main/graph/schema.graphqls)
+Все query запросы, mutation register, login, subscription commentAdded можно отправлять без авторизации. Остальные mutation запросы, нужно отправлять с токеном авторизации в headers.
